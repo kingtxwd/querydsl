@@ -13,17 +13,16 @@
  */
 package com.querydsl.core.util;
 
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.primitives.Primitives;
 import com.querydsl.core.types.ExpressionException;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -45,17 +44,18 @@ public final class ConstructorUtils {
      */
     private static final Class<?>[] NO_ARGS = {};
 
-    private static final ClassToInstanceMap<Object> defaultPrimitives
-            = ImmutableClassToInstanceMap.builder()
-            .put(Boolean.TYPE, false)
-            .put(Byte.TYPE, (byte) 0)
-            .put(Character.TYPE, (char) 0)
-            .put(Short.TYPE, (short) 0)
-            .put(Integer.TYPE, 0)
-            .put(Long.TYPE, 0L)
-            .put(Float.TYPE, 0.0F)
-            .put(Double.TYPE, 0.0)
-            .build();
+    private static final Map<Class<?>, Object> defaultPrimitives = new HashMap<>();
+
+    {
+        defaultPrimitives.put(Boolean.TYPE, false);
+        defaultPrimitives.put(Byte.TYPE, (byte) 0);
+        defaultPrimitives.put(Character.TYPE, (char) 0);
+        defaultPrimitives.put(Short.TYPE, (short) 0);
+        defaultPrimitives.put(Integer.TYPE, 0);
+        defaultPrimitives.put(Long.TYPE, 0L);
+        defaultPrimitives.put(Float.TYPE, 0.0F);
+        defaultPrimitives.put(Double.TYPE, 0.0);
+    }
 
     /**
      * Returns the constructor where the formal parameter list matches the
@@ -138,7 +138,7 @@ public final class ConstructorUtils {
         if (clazz.isArray()) {
             clazz = clazz.getComponentType();
         }
-        return Primitives.wrap(clazz);
+        return PrimitiveUtils.wrap(clazz);
     }
 
     private static boolean compatible(Class<?> parameter, Class<?> argument) {
@@ -243,7 +243,7 @@ public final class ConstructorUtils {
             for (Integer location : primitiveLocations) {
                 if (args[location] == null) {
                     Class<?> primitiveClass = paramTypes[location];
-                    args[location] = defaultPrimitives.getInstance(primitiveClass);
+                    args[location] = defaultPrimitives.get(primitiveClass);
                 }
             }
             return args;
@@ -257,7 +257,7 @@ public final class ConstructorUtils {
 
         public PrimitiveAwareVarArgsTransformer(Constructor<?> constructor) {
             super(constructor);
-            defaultInstance = (componentType != null) ? defaultPrimitives.getInstance(componentType) : null;
+            defaultInstance = (componentType != null) ? defaultPrimitives.get(componentType) : null;
         }
 
         @Override

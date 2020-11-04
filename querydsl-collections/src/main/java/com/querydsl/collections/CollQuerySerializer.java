@@ -25,10 +25,7 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.primitives.Primitives;
 import com.querydsl.codegen.Serializer;
 import com.querydsl.core.QueryException;
 import com.querydsl.core.support.SerializerBase;
@@ -40,8 +37,6 @@ import com.querydsl.core.types.*;
  * @author tiwe
  */
 public final class CollQuerySerializer extends SerializerBase<CollQuerySerializer> {
-
-    private static final Set<Class<?>> WRAPPER_TYPES = ImmutableSet.copyOf(Primitives.allWrapperTypes());
 
     private static final Map<Operator, String> OPERATOR_SYMBOLS = new IdentityHashMap<>();
 
@@ -184,7 +179,7 @@ public final class CollQuerySerializer extends SerializerBase<CollQuerySerialize
             throw new UnsupportedOperationException("Aggregation operators are only supported as single expressions");
         }
         if (args.size() == 2 && OPERATOR_SYMBOLS.containsKey(operator)
-             && isPrimitive(args.get(0).getType()) && isPrimitive(args.get(1).getType())) {
+             && args.get(0).getType().isPrimitive() && args.get(1).getType().isPrimitive()) {
             handle(args.get(0));
             append(OPERATOR_SYMBOLS.get(operator));
             handle(args.get(1));
@@ -204,10 +199,6 @@ public final class CollQuerySerializer extends SerializerBase<CollQuerySerialize
         } else {
             super.visitOperation(type, operator, args);
         }
-    }
-
-    private static boolean isPrimitive(Class<?> type) {
-        return type.isPrimitive() || WRAPPER_TYPES.contains(type);
     }
 
     @Override
