@@ -13,17 +13,18 @@
  */
 package com.querydsl.core.util;
 
-import com.google.common.collect.ImmutableSet;
 import com.querydsl.core.types.ExpressionException;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -46,7 +47,7 @@ public final class ConstructorUtils {
 
     private static final Map<Class<?>, Object> defaultPrimitives = new HashMap<>();
 
-    {
+    static {
         defaultPrimitives.put(Boolean.TYPE, false);
         defaultPrimitives.put(Byte.TYPE, (byte) 0);
         defaultPrimitives.put(Character.TYPE, (char) 0);
@@ -130,8 +131,9 @@ public final class ConstructorUtils {
         return Stream.of(
                 new PrimitiveAwareVarArgsTransformer(constructor),
                 new PrimitiveTransformer(constructor),
-                new VarArgsTransformer(constructor)
-        ).filter(ArgumentTransformer::isApplicable).collect(Collectors.toList());
+                new VarArgsTransformer(constructor))
+                .filter(ArgumentTransformer::isApplicable)
+                .collect(Collectors.toList());
     }
 
     private static Class<?> normalize(Class<?> clazz) {
@@ -218,7 +220,7 @@ public final class ConstructorUtils {
 
         public PrimitiveTransformer(Constructor<?> constructor) {
             super(constructor);
-            ImmutableSet.Builder<Integer> builder = ImmutableSet.builder();
+            Set<Integer> builder = new TreeSet<>();
             Class<?>[] parameterTypes = constructor.getParameterTypes();
             for (int location = 0; location < parameterTypes.length; location++) {
                 Class<?> parameterType = parameterTypes[location];
@@ -227,7 +229,7 @@ public final class ConstructorUtils {
                     builder.add(location);
                 }
             }
-            primitiveLocations = builder.build();
+            primitiveLocations = Collections.unmodifiableSet(builder);
         }
 
         @Override
