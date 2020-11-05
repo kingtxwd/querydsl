@@ -820,9 +820,9 @@ public class SQLTemplates extends Templates {
     }
 
     protected boolean requiresQuotes(final String identifier, final boolean precededByDot) {
-        if (identifier.matches("[^A-z0-9_]")) {
+        if (identifier.matches(".*[^A-z0-9_].*")) {
             return true;
-        } else if (identifier.matches("^[^A-z_]")) {
+        } else if (identifier.matches("^[^A-z_].*")) {
             return true;
         } else if (precededByDot && supportsUnquotedReservedWordsAsIdentifier) {
             return false;
