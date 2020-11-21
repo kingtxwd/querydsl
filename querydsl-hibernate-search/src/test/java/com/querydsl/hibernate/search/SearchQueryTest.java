@@ -34,7 +34,7 @@ public class SearchQueryTest extends AbstractQueryTest {
 
     @Override
     public void setUp() {
-        super.setUp();
+        // super.setUp();
         createUser("Bob", "Stewart", "Smith", "bob@example.com");
 
         createUser("Barbara", "X", "Lock", "barbara@a.com");
@@ -92,11 +92,6 @@ public class SearchQueryTest extends AbstractQueryTest {
     public void singleResult() {
         assertNotNull(query().where(user.middleName.eq("X")).fetchFirst());
     }
-
-    // @Test
-    // public void testcopy() {
-    //     ordering();
-    // }
 
     @Test
     public void ordering() {
