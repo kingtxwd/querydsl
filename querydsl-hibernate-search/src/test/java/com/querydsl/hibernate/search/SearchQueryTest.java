@@ -34,7 +34,7 @@ public class SearchQueryTest extends AbstractQueryTest {
 
     @Override
     public void setUp() {
-        // super.setUp();
+        super.setUp();
         createUser("Bob", "Stewart", "Smith", "bob@example.com");
 
         createUser("Barbara", "X", "Lock", "barbara@a.com");
@@ -62,6 +62,7 @@ public class SearchQueryTest extends AbstractQueryTest {
 
     @Test
     public void count() {
+        print(user)
         BooleanExpression filter = user.emailAddress.eq("bob@example.com");
         assertEquals(1, query().where(filter).fetchCount());
     }
