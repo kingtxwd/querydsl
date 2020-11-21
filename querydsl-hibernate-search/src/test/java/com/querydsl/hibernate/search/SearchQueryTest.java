@@ -93,6 +93,11 @@ public class SearchQueryTest extends AbstractQueryTest {
         assertNotNull(query().where(user.middleName.eq("X")).fetchFirst());
     }
 
+    // @Test
+    // public void testcopy() {
+    //     ordering();
+    // }
+
     @Test
     public void ordering() {
         BooleanExpression filter = user.middleName.eq("X");
