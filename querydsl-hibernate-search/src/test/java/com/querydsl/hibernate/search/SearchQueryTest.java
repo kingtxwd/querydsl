@@ -94,11 +94,6 @@ public class SearchQueryTest extends AbstractQueryTest {
     }
 
     @Test
-    public void testCopy() {
-        no_where();
-    }
-
-    @Test
     public void ordering() {
         BooleanExpression filter = user.middleName.eq("X");
         // asc
