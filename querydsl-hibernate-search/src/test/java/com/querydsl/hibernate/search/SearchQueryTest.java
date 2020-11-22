@@ -62,7 +62,6 @@ public class SearchQueryTest extends AbstractQueryTest {
 
     @Test
     public void count() {
-        print(user)
         BooleanExpression filter = user.emailAddress.eq("bob@example.com");
         assertEquals(1, query().where(filter).fetchCount());
     }
@@ -92,6 +91,11 @@ public class SearchQueryTest extends AbstractQueryTest {
     @Test
     public void singleResult() {
         assertNotNull(query().where(user.middleName.eq("X")).fetchFirst());
+    }
+
+    @Test
+    public void testCopy() {
+        no_where();
     }
 
     @Test
